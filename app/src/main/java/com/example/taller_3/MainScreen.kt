@@ -1,4 +1,4 @@
-package com.example.primeraentrega
+package com.example.taller_3
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
