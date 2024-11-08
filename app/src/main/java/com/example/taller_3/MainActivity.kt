@@ -1,6 +1,7 @@
 package com.example.taller_3
 
-import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,60 +21,21 @@ import androidx.navigation.compose.rememberNavController
 import com.example.taller_3.ui.theme.Taller_3Theme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPreferences = getSharedPreferences("com.example.taller_3.PREFERENCES", Context.MODE_PRIVATE)
         setContent {
             Taller_3Theme {
                 val navController = rememberNavController()
                 val backgroundColor = remember { mutableStateOf(Color.White) }
                 NavHost(navController, startDestination = "home") {
                     composable("home") { HomeScreen(navController, backgroundColor) }
-                    composable("main") { MainScreen(navController, backgroundColor) }
+                    composable("main") { MainScreen(navController, backgroundColor, sharedPreferences) }
                     composable("settings") { SettingsScreen(navController, backgroundColor) }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun HomeScreen(navController: NavHostController, backgroundColor: MutableState<Color>) {
-    var greeting by remember { mutableStateOf("") }
-
-    LaunchedEffect(Unit) {
-        GreetingAsyncTask { result ->
-            greeting = result
-        }.execute()
-    }
-
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColor.value),
-        content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = greeting)
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { navController.navigate("main") }) {
-                    Text(text = "Ir a la Actividad Principal")
-                }
-            }
-        }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    val backgroundColor = remember { mutableStateOf(Color.White) }
-    Taller_3Theme {
-        HomeScreen(rememberNavController(), backgroundColor)
     }
 }

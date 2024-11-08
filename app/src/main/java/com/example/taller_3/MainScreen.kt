@@ -1,6 +1,7 @@
 package com.example.taller_3
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,7 +18,7 @@ import androidx.navigation.compose.rememberNavController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen(navController: NavHostController, backgroundColor: MutableState<Color>) {
+fun MainScreen(navController: NavHostController, backgroundColor: MutableState<Color>, sharedPreferences: SharedPreferences) {
     var name by remember { mutableStateOf("") }
     var namesList by remember { mutableStateOf(listOf<String>()) }
     var showList by remember { mutableStateOf(false) }
@@ -43,6 +44,10 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
                 Button(onClick = {
                     if (name.isNotEmpty()) {
                         namesList = namesList + name
+                        with(sharedPreferences.edit()) {
+                            putString("saved_name", name)
+                            apply()
+                        }
                         name = ""
                     }
                 }) {
@@ -72,5 +77,5 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
 @Composable
 fun MainScreenPreview() {
     val backgroundColor = remember { mutableStateOf(Color.White) }
-    MainScreen(rememberNavController(), backgroundColor)
+    MainScreen(rememberNavController(), backgroundColor, remember { mutableStateOf(null) as SharedPreferences })
 }
