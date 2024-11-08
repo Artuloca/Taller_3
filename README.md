@@ -1,6 +1,6 @@
 
 
-url = 
+url = https://github.com/Artuloca/Taller_3.git
 
 
 Proyecto Android: Gestión de Datos del Usuario
