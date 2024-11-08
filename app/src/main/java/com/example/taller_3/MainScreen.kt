@@ -2,6 +2,7 @@ package com.example.taller_3
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,19 +19,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen(navController: NavHostController, backgroundColor: MutableState<Color>, database: AppDatabase) {
+fun MainScreen(navController: NavHostController, backgroundColor: MutableState<Color>, database: AppDatabase, sharedPreferences: SharedPreferences) {
     val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
     var name by remember { mutableStateOf("") }
     var savedName by remember { mutableStateOf(sharedPreferences.getString("name", "") ?: "") }
     var namesList by remember { mutableStateOf(listOf<String>()) }
     var showList by remember { mutableStateOf(false) }
-    val couroutineScope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier
@@ -57,13 +56,13 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
                         name = ""
                     }
                 }) {
-                    Text(text = "Guarda en SharedPreferences")
+                    Text(text = "Guardar en SharedPreferences")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "Nombre guardado: $savedName")
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = {
-                    couroutineScope.launch {
+                    coroutineScope.launch {
                         if (name.isNotEmpty()) {
                             database.userDao().insert(User(1, name))
                             name = ""
@@ -74,15 +73,14 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = {
-                    couroutineScope.launch {
-                        val users = database.userDao().getUserById(1)
-                        users?.let {
+                    coroutineScope.launch {
+                        val user = database.userDao().getUserById(1)
+                        user?.let {
                             savedName = it.name
                         }
                     }
-
                 }) {
-                    Text(text = "Caragar desde SQLite")
+                    Text(text = "Cargar desde SQLite")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = { showList = !showList }) {
@@ -104,10 +102,9 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
     )
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
     val backgroundColor = remember { mutableStateOf(Color.White) }
-    MainScreen(rememberNavController(), backgroundColor, database = Room.databaseBuilder(LocalContext.current, AppDatabase::class.java, "app-database").build())
+    MainScreen(rememberNavController(), backgroundColor, Room.databaseBuilder(LocalContext.current, AppDatabase::class.java, "app-database").build(), LocalContext.current.getSharedPreferences("com.example.taller_3.PREFERENCES", Context.MODE_PRIVATE))
 }
