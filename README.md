@@ -1,4 +1,4 @@
-
+@ Hecho por  , Arturo Lopez Castaño , Roberto Quilez y Rodrigo Rojas Redondo
 
 url = https://github.com/Artuloca/Taller_3.git
 
