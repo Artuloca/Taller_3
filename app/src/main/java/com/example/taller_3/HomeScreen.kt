@@ -1,5 +1,6 @@
 package com.example.taller_3
 
+import android.os.AsyncTask
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -14,6 +15,14 @@ import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun HomeScreen(navController: NavHostController, backgroundColor: MutableState<Color>) {
+    var greeting by remember { mutableStateOf("Loading...") }
+
+    LaunchedEffect(Unit) {
+        GreetingAsyncTask { result ->
+            greeting = result
+        }.execute()
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -27,7 +36,7 @@ fun HomeScreen(navController: NavHostController, backgroundColor: MutableState<C
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Home Screen")
+                Text(text = greeting)
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = { navController.navigate("main") }) {
                     Text(text = "Go to Main Screen")

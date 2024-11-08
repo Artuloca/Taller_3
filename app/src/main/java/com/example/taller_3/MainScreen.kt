@@ -17,19 +17,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen(navController: NavHostController, backgroundColor: MutableState<Color>, database: AppDatabase, sharedPreferences: SharedPreferences) {
+fun MainScreen(navController: NavHostController, backgroundColor: MutableState<Color>, sharedPreferences: SharedPreferences) {
     val context = LocalContext.current
-    val editor = sharedPreferences.edit()
+    val userRepository = UserRepository(context)
     var name by remember { mutableStateOf("") }
     var savedName by remember { mutableStateOf(sharedPreferences.getString("name", "") ?: "") }
-    var namesList by remember { mutableStateOf(listOf<String>()) }
+    var namesList by remember { mutableStateOf(userRepository.getAllUsers()) }
     var showList by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier
@@ -51,7 +48,7 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = {
                     if (name.isNotEmpty()) {
-                        editor.putString("name", name).apply()
+                        sharedPreferences.edit().putString("name", name).apply()
                         savedName = name
                         name = ""
                     }
@@ -62,25 +59,13 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
                 Text(text = "Nombre guardado: $savedName")
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = {
-                    coroutineScope.launch {
-                        if (name.isNotEmpty()) {
-                            database.userDao().insert(User(1, name))
-                            name = ""
-                        }
+                    if (name.isNotEmpty()) {
+                        userRepository.insertUser(name)
+                        namesList = userRepository.getAllUsers()
+                        name = ""
                     }
                 }) {
                     Text(text = "Guardar en SQLite")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = {
-                    coroutineScope.launch {
-                        val user = database.userDao().getUserById(1)
-                        user?.let {
-                            savedName = it.name
-                        }
-                    }
-                }) {
-                    Text(text = "Cargar desde SQLite")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = { showList = !showList }) {
@@ -88,8 +73,8 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
                 }
                 if (showList) {
                     LazyColumn {
-                        items(namesList) { name ->
-                            Text(text = name)
+                        items(namesList) { user ->
+                            Text(text = user.name)
                         }
                     }
                 }
@@ -106,5 +91,5 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
 @Composable
 fun MainScreenPreview() {
     val backgroundColor = remember { mutableStateOf(Color.White) }
-    MainScreen(rememberNavController(), backgroundColor, Room.databaseBuilder(LocalContext.current, AppDatabase::class.java, "app-database").build(), LocalContext.current.getSharedPreferences("com.example.taller_3.PREFERENCES", Context.MODE_PRIVATE))
+    MainScreen(rememberNavController(), backgroundColor, LocalContext.current.getSharedPreferences("com.example.taller_3.PREFERENCES", Context.MODE_PRIVATE))
 }
