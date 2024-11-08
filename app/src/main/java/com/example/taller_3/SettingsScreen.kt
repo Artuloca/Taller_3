@@ -22,8 +22,12 @@ fun SettingsScreen(navController: NavHostController, backgroundColor: MutableSta
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
-    val colors = listOf(Color.Red, Color.Blue, Color.Yellow, Color.Green)
-    var selectedColor by remember { mutableStateOf(backgroundColor.value) }
+    val colors = listOf(
+        Color.Red to "Rojo",
+        Color.Blue to "Azul",
+        Color.Yellow to "Amarillo",
+        Color.Green to "Verde"
+    )
 
     Scaffold(
         modifier = Modifier
@@ -39,19 +43,17 @@ fun SettingsScreen(navController: NavHostController, backgroundColor: MutableSta
             ) {
                 Text(text = "Selecciona el color de fondo")
                 Spacer(modifier = Modifier.height(16.dp))
-                colors.forEach { color ->
+                colors.forEach { (color, colorName) ->
                     Button(
                         onClick = {
-                            selectedColor = color
                             backgroundColor.value = color
                             editor.putInt("background_color", color.toArgb()).apply()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp)
-                            .background(color)
                     ) {
-                        Text(text = " ", color = Color.Transparent)
+                        Text(text = colorName, color = Color.White)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))

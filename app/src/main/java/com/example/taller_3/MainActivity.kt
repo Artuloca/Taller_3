@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,10 +22,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPreferences = getSharedPreferences("com.example.taller_3.PREFERENCES", Context.MODE_PRIVATE)
+        val savedColor = sharedPreferences.getInt("background_color", Color.White.toArgb())
+        val backgroundColor = mutableStateOf(Color(savedColor))
+
         setContent {
             Taller_3Theme {
                 val navController = rememberNavController()
-                val backgroundColor = remember { mutableStateOf(Color.White) }
                 NavHost(navController, startDestination = "home") {
                     composable("home") { HomeScreen(navController, backgroundColor) }
                     composable("main") { MainScreen(navController, backgroundColor, sharedPreferences) }

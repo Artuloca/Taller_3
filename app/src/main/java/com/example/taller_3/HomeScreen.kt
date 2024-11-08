@@ -45,7 +45,6 @@ fun HomeScreen(navController: NavHostController, backgroundColor: MutableState<C
         }
     )
 }
-
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
