@@ -17,6 +17,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.taller_3.GreetingAsyncTask
+import com.example.taller_3.SettingsScreen
 import com.example.taller_3.ui.theme.Taller_3Theme
 import java.util.*
 
