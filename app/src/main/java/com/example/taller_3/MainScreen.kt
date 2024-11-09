@@ -20,22 +20,21 @@ import androidx.navigation.compose.rememberNavController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen(navController: NavHostController, backgroundColor: MutableState<Color>, sharedPreferences: SharedPreferences) {
-    val context = LocalContext.current
-    val userRepository = UserRepository(context)
+fun MainScreen(navController: NavHostController, backgroundColor: MutableState<Color>, sharedPreferences: SharedPreferences, userRepository: UserRepository) {
     var name by remember { mutableStateOf("") }
     var savedName by remember { mutableStateOf(sharedPreferences.getString("name", "") ?: "") }
-    var namesList by remember { mutableStateOf(userRepository.getAllUsers()) }
     var showList by remember { mutableStateOf(false) }
+    var namesList by remember { mutableStateOf(listOf<User>()) }
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor.value),
-        content = {
+        content = { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(paddingValues)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -91,5 +90,8 @@ fun MainScreen(navController: NavHostController, backgroundColor: MutableState<C
 @Composable
 fun MainScreenPreview() {
     val backgroundColor = remember { mutableStateOf(Color.White) }
-    MainScreen(rememberNavController(), backgroundColor, LocalContext.current.getSharedPreferences("com.example.taller_3.PREFERENCES", Context.MODE_PRIVATE))
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("com.example.taller_3.PREFERENCES", Context.MODE_PRIVATE)
+    val userRepository = UserRepository(context)
+    MainScreen(rememberNavController(), backgroundColor, sharedPreferences, userRepository)
 }

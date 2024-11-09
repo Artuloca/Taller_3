@@ -18,10 +18,12 @@ import com.example.taller_3.ui.theme.Taller_3Theme
 
 class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var userRepository: UserRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPreferences = getSharedPreferences("com.example.taller_3.PREFERENCES", Context.MODE_PRIVATE)
+        userRepository = UserRepository(this)
         val savedColor = sharedPreferences.getInt("background_color", Color.White.toArgb())
         val backgroundColor = mutableStateOf(Color(savedColor))
 
@@ -30,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(navController, startDestination = "home") {
                     composable("home") { HomeScreen(navController, backgroundColor) }
-                    composable("main") { MainScreen(navController, backgroundColor, sharedPreferences) }
+                    composable("main") { MainScreen(navController, backgroundColor, sharedPreferences, userRepository) }
                     composable("settings") { SettingsScreen(navController, backgroundColor) }
                 }
             }

@@ -20,45 +20,51 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun SettingsScreen(navController: NavHostController, backgroundColor: MutableState<Color>) {
     val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+    val sharedPreferences = context.getSharedPreferences("com.example.taller_3.PREFERENCES", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
-    val colors = listOf(
-        Color.Red to "Rojo",
-        Color.Blue to "Azul",
-        Color.Yellow to "Amarillo",
-        Color.Green to "Verde"
-    )
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColor.value),
         content = {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(backgroundColor.value)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Selecciona el color de fondo")
+                Text(text = "Settings Screen")
                 Spacer(modifier = Modifier.height(16.dp))
-                colors.forEach { (color, colorName) ->
-                    Button(
-                        onClick = {
-                            backgroundColor.value = color
-                            editor.putInt("background_color", color.toArgb()).apply()
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                    ) {
-                        Text(text = colorName, color = Color.White)
-                    }
+                Button(onClick = {
+                    backgroundColor.value = Color.Red
+                    editor.putInt("background_color", Color.Red.toArgb()).apply()
+                }) {
+                    Text(text = "Rojo")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = {
+                    backgroundColor.value = Color.Blue
+                    editor.putInt("background_color", Color.Blue.toArgb()).apply()
+                }) {
+                    Text(text = "Azul")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = {
+                    backgroundColor.value = Color.Yellow
+                    editor.putInt("background_color", Color.Yellow.toArgb()).apply()
+                }) {
+                    Text(text = "Amarillo")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = {
+                    backgroundColor.value = Color.Green
+                    editor.putInt("background_color", Color.Green.toArgb()).apply()
+                }) {
+                    Text(text = "Verde")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = { navController.navigate("home") }) {
-                    Text(text = "Volver a la pantalla principal")
+                    Text(text = "Ir a Pantalla Principal")
                 }
             }
         }

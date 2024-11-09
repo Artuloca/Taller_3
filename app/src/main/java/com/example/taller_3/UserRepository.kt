@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 
-class UserRepository(context: Context) {
+class UserRepository(private val context: Context) {
     private val dbHelper = UserDatabaseHelper(context)
 
     fun insertUser(name: String) {
@@ -17,7 +17,7 @@ class UserRepository(context: Context) {
 
     fun getAllUsers(): List<User> {
         val db = dbHelper.readableDatabase
-        val cursor: Cursor = db.query("users", null, null, null, null, null, null)
+        val cursor = db.query("users", arrayOf("id", "name"), null, null, null, null, null)
         val users = mutableListOf<User>()
         with(cursor) {
             while (moveToNext()) {
